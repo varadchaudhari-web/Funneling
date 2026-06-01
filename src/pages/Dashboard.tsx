@@ -1,6 +1,22 @@
 import { Link } from 'react-router-dom';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { DollarSign, Users, Filter, TrendingUp, ArrowRight, Plus, Eye, MousePointer, Zap } from 'lucide-react';
+import {
+  Bell,
+  CheckSquare,
+  ClipboardList,
+  DollarSign,
+  FileCode,
+  Filter,
+  Megaphone,
+  MousePointer,
+  Plus,
+  TrendingUp,
+  UserPlus,
+  Users,
+  Eye,
+  Zap,
+  ArrowRight
+} from 'lucide-react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import StatsCard from '@/components/features/StatsCard';
 import { useAuth } from '@/contexts/AuthContext';
@@ -17,6 +33,23 @@ export default function Dashboard() {
   const avgConversionRate = totalVisits > 0 ? ((totalConversions / totalVisits) * 100).toFixed(1) : '0';
   const newLeads = leads.filter(l => l.status === 'new').length;
   const activeCampaigns = campaigns.filter(c => c.status === 'active').length;
+  const isSales = user?.role === 'sales';
+
+  const quickActions = isSales
+    ? [
+      { label: 'Add Lead', href: '/crm', icon: UserPlus, color: 'bg-blue-50 hover:bg-blue-100 text-blue-600' },
+      { label: 'Pipeline', href: '/crm', icon: ClipboardList, color: 'bg-primary-50 hover:bg-primary-100 text-primary-600' },
+      { label: 'Follow Up', href: '/crm', icon: Bell, color: 'bg-green-50 hover:bg-green-100 text-green-600' },
+      { label: 'Tasks', href: '/notifications', icon: CheckSquare, color: 'bg-orange-50 hover:bg-orange-100 text-orange-600' },
+    ]
+    : [
+      { label: 'New Funnel', href: '/funnel-builder', icon: Zap, color: 'bg-primary-50 hover:bg-primary-100 text-primary-600' },
+      { label: 'Add Lead', href: '/crm', icon: UserPlus, color: 'bg-blue-50 hover:bg-blue-100 text-blue-600' },
+      { label: 'Campaign', href: '/campaigns', icon: Megaphone, color: 'bg-green-50 hover:bg-green-100 text-green-600' },
+      { label: 'Analytics', href: '/analytics', icon: TrendingUp, color: 'bg-purple-50 hover:bg-purple-100 text-purple-600' },
+      { label: 'Landing Page', href: '/landing-builder', icon: FileCode, color: 'bg-orange-50 hover:bg-orange-100 text-orange-600' },
+      { label: 'Affiliate', href: '/affiliate', icon: DollarSign, color: 'bg-teal-50 hover:bg-teal-100 text-teal-600' },
+    ];
 
   return (
     <DashboardLayout>
@@ -25,23 +58,89 @@ export default function Dashboard() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-display font-bold text-gray-900">
-              Welcome back, {user?.name?.split(' ')[0]} 👋
+              Welcome back, {user?.name?.split(' ')[0]}
             </h1>
-            <p className="text-gray-500 text-sm mt-1">Here's what's happening with your business today</p>
+            <p className="text-gray-500 text-sm mt-1">
+              {isSales ? 'Here are your assigned leads, pipeline, and follow-up priorities.' : "Here's what's happening with your business today"}
+            </p>
           </div>
-          <Link to="/funnel-builder" className="btn-primary">
-            <Plus className="w-4 h-4" /> New Funnel
-          </Link>
+          {isSales ? (
+            <Link to="/crm" className="btn-primary">
+              <Plus className="w-4 h-4" /> Add Lead
+            </Link>
+          ) : (
+            <Link to="/funnel-builder" className="btn-primary">
+              <Plus className="w-4 h-4" /> New Funnel
+            </Link>
+          )}
         </div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatsCard title="Total Revenue" value={`$${totalRevenue.toLocaleString()}`} change={18.2} icon={DollarSign} iconColor="text-green-600" iconBg="bg-green-100" />
-          <StatsCard title="Total Visits" value={totalVisits} change={12.4} icon={Eye} iconColor="text-blue-600" iconBg="bg-blue-100" />
-          <StatsCard title="Conversions" value={totalConversions} change={9.1} icon={MousePointer} iconColor="text-primary-600" iconBg="bg-primary-100" />
-          <StatsCard title="Conversion Rate" value={`${avgConversionRate}%`} change={3.5} icon={TrendingUp} iconColor="text-accent-600" iconBg="bg-accent-100" />
+          {isSales ? (
+            <>
+              <StatsCard title="Assigned Leads" value={leads.length} change={8.2} icon={Users} iconColor="text-blue-600" iconBg="bg-blue-100" />
+              <StatsCard title="New Leads" value={newLeads} change={12.4} icon={UserPlus} iconColor="text-primary-600" iconBg="bg-primary-100" />
+              <StatsCard title="Qualified Pipeline" value={leads.filter(l => l.status === 'qualified' || l.status === 'proposal').length} change={6.1} icon={ClipboardList} iconColor="text-green-600" iconBg="bg-green-100" />
+              <StatsCard title="Follow-ups Due" value={leads.filter(l => l.status === 'contacted').length} change={3.5} icon={Bell} iconColor="text-accent-600" iconBg="bg-accent-100" />
+            </>
+          ) : (
+            <>
+              <StatsCard title="Total Revenue" value={`$${totalRevenue.toLocaleString()}`} change={18.2} icon={DollarSign} iconColor="text-green-600" iconBg="bg-green-100" />
+              <StatsCard title="Total Visits" value={totalVisits} change={12.4} icon={Eye} iconColor="text-blue-600" iconBg="bg-blue-100" />
+              <StatsCard title="Conversions" value={totalConversions} change={9.1} icon={MousePointer} iconColor="text-primary-600" iconBg="bg-primary-100" />
+              <StatsCard title="Conversion Rate" value={`${avgConversionRate}%`} change={3.5} icon={TrendingUp} iconColor="text-accent-600" iconBg="bg-accent-100" />
+            </>
+          )}
         </div>
 
+        {isSales ? (
+          <div className="grid lg:grid-cols-2 gap-6">
+            <div className="dashboard-card">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-display font-bold text-gray-900">Pipeline Focus</h3>
+                <Link to="/crm" className="text-sm text-primary-600 hover:text-primary-700 font-medium flex items-center gap-1">
+                  Open CRM <ArrowRight className="w-3 h-3" />
+                </Link>
+              </div>
+              <div className="space-y-3">
+                {leads.filter(lead => ['new', 'contacted', 'qualified', 'proposal'].includes(lead.status)).slice(0, 6).map(lead => (
+                  <div key={lead.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
+                    <div className="w-8 h-8 bg-gradient-brand rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                      {lead.name.charAt(0)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm text-gray-900 truncate">{lead.name}</p>
+                      <p className="text-xs text-gray-500">{lead.company || lead.email}</p>
+                    </div>
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-primary-100 text-primary-700 capitalize">
+                      {lead.status.replace('_', ' ')}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="dashboard-card">
+              <h3 className="font-display font-bold text-gray-900 mb-4">Follow-up Queue</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Contacted', value: leads.filter(l => l.status === 'contacted').length, icon: Bell },
+                  { label: 'Qualified', value: leads.filter(l => l.status === 'qualified').length, icon: CheckSquare },
+                  { label: 'Proposals', value: leads.filter(l => l.status === 'proposal').length, icon: ClipboardList },
+                  { label: 'Closed Won', value: leads.filter(l => l.status === 'closed_won').length, icon: TrendingUp },
+                ].map(({ label, value, icon: Icon }) => (
+                  <Link key={label} to="/crm" className="bg-gray-50 rounded-xl p-4 hover:bg-primary-50 transition-colors">
+                    <Icon className="w-5 h-5 text-primary-600 mb-3" />
+                    <p className="text-2xl font-bold text-gray-900">{value}</p>
+                    <p className="text-xs text-gray-500">{label}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <>
         {/* Secondary Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="dashboard-card">
@@ -110,7 +209,7 @@ export default function Dashboard() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#94a3b8' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} tickFormatter={v => `$${(v/1000).toFixed(0)}k`} />
+                <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} tickFormatter={v => `$${(v / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, 'Revenue']} />
                 <Area type="monotone" dataKey="value" stroke="#7C3AED" strokeWidth={2} fill="url(#revGrad)" />
               </AreaChart>
@@ -177,13 +276,12 @@ export default function Dashboard() {
                     <p className="text-xs text-gray-500">{lead.source}</p>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                      lead.status === 'new' ? 'bg-blue-100 text-blue-700' :
-                      lead.status === 'qualified' ? 'bg-green-100 text-green-700' :
-                      lead.status === 'proposal' ? 'bg-purple-100 text-purple-700' :
-                      lead.status === 'closed_won' ? 'bg-teal-100 text-teal-700' :
-                      'bg-gray-100 text-gray-700'
-                    }`}>
+                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${lead.status === 'new' ? 'bg-blue-100 text-blue-700' :
+                        lead.status === 'qualified' ? 'bg-green-100 text-green-700' :
+                          lead.status === 'proposal' ? 'bg-purple-100 text-purple-700' :
+                            lead.status === 'closed_won' ? 'bg-teal-100 text-teal-700' :
+                              'bg-gray-100 text-gray-700'
+                      }`}>
                       {lead.status.replace('_', ' ')}
                     </span>
                     <span className="text-xs font-semibold text-primary-600">Score: {lead.score}</span>
@@ -193,21 +291,16 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+          </>
+        )}
 
         {/* Quick Actions */}
         <div className="dashboard-card">
           <h3 className="font-display font-bold text-gray-900 mb-4">Quick Actions</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {[
-              { label: 'New Funnel', href: '/funnel-builder', icon: '⚡', color: 'bg-primary-50 hover:bg-primary-100' },
-              { label: 'Add Lead', href: '/crm', icon: '👤', color: 'bg-blue-50 hover:bg-blue-100' },
-              { label: 'Campaign', href: '/campaigns', icon: '📧', color: 'bg-green-50 hover:bg-green-100' },
-              { label: 'Analytics', href: '/analytics', icon: '📊', color: 'bg-purple-50 hover:bg-purple-100' },
-              { label: 'Landing Page', href: '/landing-builder', icon: '🎨', color: 'bg-orange-50 hover:bg-orange-100' },
-              { label: 'Affiliate', href: '/affiliate', icon: '💰', color: 'bg-teal-50 hover:bg-teal-100' },
-            ].map(({ label, href, icon, color }) => (
+            {quickActions.map(({ label, href, icon: Icon, color }) => (
               <Link key={label} to={href} className={`${color} rounded-xl p-4 text-center transition-colors cursor-pointer`}>
-                <div className="text-2xl mb-2">{icon}</div>
+                <Icon className="w-6 h-6 mx-auto mb-2" />
                 <p className="text-xs font-semibold text-gray-700">{label}</p>
               </Link>
             ))}

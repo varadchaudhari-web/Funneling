@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Target, Users, Zap, BarChart3, Globe, ArrowRight, Award, Heart, Linkedin, Twitter } from 'lucide-react';
+import { Target, Users, Zap, BarChart3, Globe, ArrowRight, Award, Heart, Linkedin, Twitter, Building2, DollarSign, Star } from 'lucide-react';
+import AuthAwareLink from '@/components/features/AuthAwareLink';
 
 const TEAM = [
   { name: 'Marcus Reid', role: 'CEO & Co-founder', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&h=120&fit=crop&crop=face', bio: 'Former Head of Growth at HubSpot. Built 3 SaaS products.' },
@@ -47,13 +48,15 @@ export default function About() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { value: '50,000+', label: 'Active Businesses', icon: '🏢' },
-              { value: '$2.4B+', label: 'Revenue Generated', icon: '💰' },
-              { value: '148', label: 'Countries', icon: '🌍' },
-              { value: '4.9/5', label: 'Customer Rating', icon: '⭐' },
-            ].map(({ value, label, icon }) => (
+              { value: '50,000+', label: 'Active Businesses', icon: Building2 },
+              { value: '$2.4B+', label: 'Revenue Generated', icon: DollarSign },
+              { value: '148', label: 'Countries', icon: Globe },
+              { value: '4.9/5', label: 'Customer Rating', icon: Star },
+            ].map(({ value, label, icon: Icon }) => (
               <div key={label} className="text-center">
-                <div className="text-4xl mb-2">{icon}</div>
+                <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                  <Icon className="w-6 h-6 text-primary-600" />
+                </div>
                 <p className="text-3xl font-display font-black gradient-text-brand">{value}</p>
                 <p className="text-gray-500 text-sm mt-1">{label}</p>
               </div>
@@ -156,7 +159,7 @@ export default function About() {
           <h2 className="text-4xl font-display font-black text-white mb-4">Join 50,000+ Growing Businesses</h2>
           <p className="text-white/70 text-lg mb-8">Start your 14-day free trial and see why businesses choose Funneling.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" className="btn-accent text-lg py-4 px-8">Start Free Trial <ArrowRight className="w-5 h-5" /></Link>
+            <AuthAwareLink intent="trial" guestTo="/register" className="btn-accent text-lg py-4 px-8">Start Free Trial <ArrowRight className="w-5 h-5" /></AuthAwareLink>
             <Link to="/contact" className="btn-outline border-white/40 text-white hover:bg-white/10 text-lg py-4 px-8">Contact Sales</Link>
           </div>
         </div>

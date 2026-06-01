@@ -1,5 +1,6 @@
+import { Check, CreditCard, Lock, ArrowRight, X, RefreshCw, Download, Clock } from "lucide-react";
 import { useState } from 'react';
-import { Check, CreditCard, Lock, ArrowRight, X, RefreshCw, Download } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { MOCK_PAYMENTS } from '@/data/mockData';
 import { toast } from 'sonner';
@@ -143,7 +144,7 @@ export default function PaymentDemo() {
                       {orderBump && <Check className="w-3 h-3 text-white" />}
                     </div>
                     <div>
-                      <p className="font-semibold text-sm text-gray-900">⚡ Order Bump: Marketing Templates Pack — <span className="text-accent-600">+$47</span></p>
+                      <p className="font-semibold text-sm text-gray-900">Order Bump: Marketing Templates Pack — <span className="text-accent-600">+$47</span></p>
                       <p className="text-xs text-gray-500">50+ high-converting templates (regularly $197)</p>
                     </div>
                   </div>
@@ -209,10 +210,13 @@ export default function PaymentDemo() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Check className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">Payment Successful! 🎉</h3>
+              <h3 className="text-2xl font-display font-bold text-gray-900 mb-2">Payment Successful!</h3>
               <p className="text-gray-500 mb-8">Before you access your dashboard, we have a special one-time offer for you:</p>
               <div className="bg-gradient-to-br from-primary-900 to-secondary-900 text-white rounded-3xl p-6 mb-6">
-                <div className="bg-accent-500 text-white text-sm font-bold px-4 py-1.5 rounded-full inline-block mb-4">⏰ ONE-TIME OFFER</div>
+                <div className="bg-accent-500 text-white text-sm font-bold px-4 py-1.5 rounded-full inline-flex items-center gap-2 mb-4">
+                  <Clock className="w-4 h-4" />
+                  ONE-TIME OFFER
+                </div>
                 <h4 className="text-2xl font-display font-bold mb-3">VIP Funnel Mastery Course</h4>
                 <p className="text-white/80 mb-4">Complete video training on building $100K/month funnels. 12 modules, 40+ lessons. Normally $997 — yours for just $297 today.</p>
                 <div className="flex gap-3 justify-center">
@@ -232,7 +236,7 @@ export default function PaymentDemo() {
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-scale-in">
                 <Check className="w-10 h-10 text-green-600" />
               </div>
-              <h3 className="text-3xl font-display font-bold text-gray-900 mb-3">Welcome to Funneling! 🎉</h3>
+              <h3 className="text-3xl font-display font-bold text-gray-900 mb-3">Welcome to Funneling!</h3>
               <p className="text-gray-500 mb-2">Your {selectedPlan.name} subscription is now active.</p>
               <p className="text-gray-400 text-sm mb-8">A receipt has been sent to your email address.</p>
               <div className="bg-gray-50 rounded-2xl p-4 text-left mb-6 space-y-2">

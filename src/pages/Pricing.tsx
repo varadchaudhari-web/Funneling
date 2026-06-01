@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, X, ArrowRight, Zap, Star, ChevronDown } from 'lucide-react';
+import { Check, X, ArrowRight, Star, ChevronDown, Plus, ShieldCheck } from 'lucide-react';
+import AuthAwareLink from '@/components/features/AuthAwareLink';
 
 const PLANS = [
   {
@@ -120,9 +121,15 @@ export default function Pricing() {
                     <span className="text-gray-500 pb-2">/month</span>
                   </div>
                   {annual && <p className="text-sm text-green-600 font-medium mb-6">Billed ${plan.annualPrice * 12}/year · Save ${(plan.monthlyPrice - plan.annualPrice) * 12}/yr</p>}
-                  <Link to="/register" className={`block text-center py-3.5 rounded-xl font-semibold transition-all mb-8 ${plan.badge ? 'btn-primary w-full justify-center' : 'btn-outline w-full justify-center'}`}>
-                    {plan.id === 'enterprise' ? 'Contact Sales' : 'Start Free Trial'}
-                  </Link>
+                  {plan.id === 'enterprise' ? (
+                    <Link to="/contact" className="block text-center py-3.5 rounded-xl font-semibold transition-all mb-8 btn-outline w-full justify-center">
+                      Contact Sales
+                    </Link>
+                  ) : (
+                    <AuthAwareLink intent="trial" guestTo="/register" className={`block text-center py-3.5 rounded-xl font-semibold transition-all mb-8 ${plan.badge ? 'btn-primary w-full justify-center' : 'btn-outline w-full justify-center'}`}>
+                      Start Free Trial
+                    </AuthAwareLink>
+                  )}
                   <div className="space-y-3">
                     {plan.features.map(({ text, included }) => (
                       <div key={text} className="flex items-center gap-3">
@@ -163,7 +170,10 @@ export default function Pricing() {
                 <p className="font-display font-bold text-2xl text-gray-900 mb-1">${price}</p>
                 <p className="text-xs text-gray-500 mb-3">/{period}</p>
                 <p className="font-medium text-sm text-gray-700">{name}</p>
-                <button className="mt-3 text-xs text-primary-600 font-semibold hover:text-primary-700">Add to Plan →</button>
+                <button className="mt-3 text-xs text-primary-600 font-semibold hover:text-primary-700 inline-flex items-center justify-center gap-1">
+                  <Plus className="w-3 h-3" />
+                  Add to Plan
+                </button>
               </div>
             ))}
           </div>
@@ -194,13 +204,13 @@ export default function Pricing() {
       <section className="section-padding bg-white">
         <div className="max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 rounded-full mb-6">
-            <span className="text-4xl">🛡️</span>
+            <ShieldCheck className="w-10 h-10 text-green-600" />
           </div>
           <h2 className="text-3xl font-display font-black text-gray-900 mb-4">30-Day Money-Back Guarantee</h2>
           <p className="text-gray-500 text-lg mb-8">If you're not 100% satisfied with Funneling within 30 days of your purchase, we'll refund you in full. No questions asked, no hoops to jump through.</p>
-          <Link to="/register" className="btn-primary text-lg py-4 px-8">
+          <AuthAwareLink intent="trial" guestTo="/login" className="btn-primary text-lg py-4 px-8">
             Start Your Free Trial <ArrowRight className="w-5 h-5" />
-          </Link>
+          </AuthAwareLink>
         </div>
       </section>
     </div>

@@ -1,6 +1,7 @@
+import { Zap, CheckCircle, AlertTriangle, User, DollarSign, Mail, Users, Filter, Shield, TrendingUp, Check, X, Search, MoreVertical } from "lucide-react";
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
-import { Users, DollarSign, Filter, Shield, TrendingUp, AlertTriangle, Check, X, Search, MoreVertical } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import StatsCard from '@/components/features/StatsCard';
 import { useApp } from '@/contexts/AppContext';
@@ -59,12 +60,14 @@ export default function AdminDashboard() {
         {/* Platform Health */}
         <div className="grid md:grid-cols-3 gap-4">
           {[
-            { label: 'API Response Time', value: '124ms', status: 'good', icon: '⚡' },
-            { label: 'Server Uptime', value: '99.98%', status: 'good', icon: '🟢' },
-            { label: 'Failed Payments', value: '1.2%', status: 'warn', icon: '⚠️' },
-          ].map(({ label, value, status, icon }) => (
+            { label: 'API Response Time', value: '124ms', status: 'good', icon: Zap },
+            { label: 'Server Uptime', value: '99.98%', status: 'good', icon: CheckCircle },
+            { label: 'Failed Payments', value: '1.2%', status: 'warn', icon: AlertTriangle },
+          ].map(({ label, value, status, icon: Icon }) => (
             <div key={label} className={`dashboard-card flex items-center gap-4 ${status === 'warn' ? 'border-amber-200' : ''}`}>
-              <div className="text-2xl">{icon}</div>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${status === 'warn' ? 'bg-amber-100' : 'bg-green-100'}`}>
+                <Icon className={`w-5 h-5 ${status === 'warn' ? 'text-amber-600' : 'text-green-600'}`} />
+              </div>
               <div>
                 <p className="text-xl font-bold text-gray-900">{value}</p>
                 <p className="text-sm text-gray-500">{label}</p>
@@ -223,14 +226,26 @@ export default function AdminDashboard() {
           <h3 className="font-display font-bold text-gray-900 mb-4">Recent Platform Activity</h3>
           <div className="space-y-3">
             {[
-              { icon: '👤', text: 'New user registered: amanda@marketing.co', time: '2 min ago', type: 'user' },
-              { icon: '⚡', text: 'Funnel published: "Product Launch" by Alex Johnson', time: '5 min ago', type: 'funnel' },
-              { icon: '💰', text: 'Payment received: $997 — Pro Annual from u1', time: '12 min ago', type: 'payment' },
-              { icon: '⚠️', text: 'High traffic alert: Funnel "Lead Gen" — 1,200 visits/hr', time: '18 min ago', type: 'alert' },
-              { icon: '📧', text: 'Campaign launched: "Spring Email" — 12,500 recipients', time: '25 min ago', type: 'campaign' },
-            ].map(({ icon, text, time, type }) => (
+              { icon: User, text: 'New user registered: amanda@marketing.co', time: '2 min ago', type: 'user' },
+              { icon: Zap, text: 'Funnel published: "Product Launch" by Alex Johnson', time: '5 min ago', type: 'funnel' },
+              { icon: DollarSign, text: 'Payment received: $997 — Pro Annual from u1', time: '12 min ago', type: 'payment' },
+              { icon: AlertTriangle, text: 'High traffic alert: Funnel "Lead Gen" — 1,200 visits/hr', time: '18 min ago', type: 'alert' },
+              { icon: Mail, text: 'Campaign launched: "Spring Email" — 12,500 recipients', time: '25 min ago', type: 'campaign' },
+            ].map(({ icon: Icon, text, time, type }) => (
               <div key={text} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                <div className="text-xl">{icon}</div>
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${
+                  type === 'payment' ? 'bg-green-100' :
+                    type === 'alert' ? 'bg-amber-100' :
+                      type === 'campaign' ? 'bg-blue-100' :
+                        'bg-primary-100'
+                }`}>
+                  <Icon className={`w-4 h-4 ${
+                    type === 'payment' ? 'text-green-600' :
+                      type === 'alert' ? 'text-amber-600' :
+                        type === 'campaign' ? 'text-blue-600' :
+                          'text-primary-600'
+                  }`} />
+                </div>
                 <p className="flex-1 text-sm text-gray-700">{text}</p>
                 <span className="text-xs text-gray-400 whitespace-nowrap">{time}</span>
               </div>

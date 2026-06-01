@@ -1,6 +1,7 @@
+import { Award, DollarSign, Users, Zap, Star, Filter, TrendingUp, ArrowRight, Trophy } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, RadialBarChart, RadialBar } from 'recharts';
-import { Filter, TrendingUp, DollarSign, Users, Zap, ArrowRight, Star, Trophy } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApp } from '@/contexts/AppContext';
@@ -130,14 +131,16 @@ export default function UserDashboard() {
             <h3 className="font-display font-bold text-gray-900 mb-4">Achievements</h3>
             <div className="space-y-3">
               {[
-                { icon: '🏆', title: 'First Funnel', desc: 'Created your first funnel', done: true },
-                { icon: '💰', title: '$10K Revenue', desc: 'Crossed $10,000 in sales', done: true },
-                { icon: '👥', title: '100 Leads', desc: 'Captured 100 leads', done: true },
-                { icon: '⚡', title: 'Campaign Pro', desc: 'Launched 5 campaigns', done: false },
-                { icon: '🌟', title: 'Top Converter', desc: '25%+ conversion rate', done: false },
-              ].map(({ icon, title, desc, done }) => (
+                { icon: Award, title: 'First Funnel', desc: 'Created your first funnel', done: true },
+                { icon: DollarSign, title: '$10K Revenue', desc: 'Crossed $10,000 in sales', done: true },
+                { icon: Users, title: '100 Leads', desc: 'Captured 100 leads', done: true },
+                { icon: Zap, title: 'Campaign Pro', desc: 'Launched 5 campaigns', done: false },
+                { icon: Star, title: 'Top Converter', desc: '25%+ conversion rate', done: false },
+              ].map(({ icon: Icon, title, desc, done }) => (
                 <div key={title} className={`flex items-center gap-3 p-2.5 rounded-xl ${done ? 'bg-green-50' : 'bg-gray-50 opacity-60'}`}>
-                  <div className="text-xl">{icon}</div>
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${done ? 'bg-green-100' : 'bg-gray-100'}`}>
+                    <Icon className={`w-4 h-4 ${done ? 'text-green-600' : 'text-gray-500'}`} />
+                  </div>
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-gray-900">{title}</p>
                     <p className="text-xs text-gray-500">{desc}</p>

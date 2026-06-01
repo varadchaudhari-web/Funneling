@@ -1,5 +1,6 @@
+import { Mail, Phone, MapPin, MessageSquare, ArrowRight, Check } from "lucide-react";
 import { useState } from 'react';
-import { Mail, Phone, MapPin, MessageSquare, ArrowRight, Check } from 'lucide-react';
+
 import { toast } from 'sonner';
 
 export default function Contact() {
@@ -148,7 +149,7 @@ export default function Contact() {
               </div>
 
               <div className="bg-primary-50 rounded-2xl p-6 border border-primary-100">
-                <h4 className="font-display font-bold text-primary-900 mb-2">🚀 Ready to Start?</h4>
+                <h4 className="font-display font-bold text-primary-900 mb-2">Ready to Start?</h4>
                 <p className="text-sm text-primary-700 mb-4">Skip the form — start your free trial and explore everything yourself in minutes.</p>
                 <a href="/register" className="btn-primary text-sm py-2.5">Start 14-Day Free Trial</a>
               </div>

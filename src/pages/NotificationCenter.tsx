@@ -1,5 +1,6 @@
+import { User, DollarSign, Mail, Settings, Bell, Users, Megaphone, Check, CheckCheck, Filter } from "lucide-react";
 import { useState } from 'react';
-import { Bell, Users, DollarSign, Megaphone, Settings, Check, CheckCheck, Filter } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { useApp } from '@/contexts/AppContext';
 
@@ -51,13 +52,13 @@ export default function NotificationCenter() {
         {/* Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { label: 'Lead Alerts', count: notifications.filter(n => n.type === 'lead').length, icon: '👤', color: 'bg-blue-50' },
-            { label: 'Sales Alerts', count: notifications.filter(n => n.type === 'sale').length, icon: '💰', color: 'bg-green-50' },
-            { label: 'Campaign', count: notifications.filter(n => n.type === 'campaign').length, icon: '📧', color: 'bg-orange-50' },
-            { label: 'System', count: notifications.filter(n => n.type === 'system').length, icon: '⚙️', color: 'bg-gray-50' },
-          ].map(({ label, count, icon, color }) => (
+            { label: 'Lead Alerts', count: notifications.filter(n => n.type === 'lead').length, icon: User, color: 'bg-blue-50' },
+            { label: 'Sales Alerts', count: notifications.filter(n => n.type === 'sale').length, icon: DollarSign, color: 'bg-green-50' },
+            { label: 'Campaign', count: notifications.filter(n => n.type === 'campaign').length, icon: Mail, color: 'bg-orange-50' },
+            { label: 'System', count: notifications.filter(n => n.type === 'system').length, icon: Settings, color: 'bg-gray-50' },
+          ].map(({ label, count, icon: Icon, color }) => (
             <div key={label} className={`${color} rounded-xl p-4 text-center`}>
-              <div className="text-2xl mb-1">{icon}</div>
+              <Icon className="w-6 h-6 mx-auto mb-2 text-primary-600" />
               <p className="text-xl font-bold text-gray-900">{count}</p>
               <p className="text-xs text-gray-500">{label}</p>
             </div>

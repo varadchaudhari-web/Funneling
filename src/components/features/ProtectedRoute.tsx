@@ -1,17 +1,53 @@
-import { useNavigate } from 'react-router-dom';
-import { Lock, LogIn, X } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft, LayoutDashboard, Lock, LogIn, ShieldAlert, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { getDefaultDashboardPath, hasRouteAccess, ROLE_LABELS } from '@/lib/rbac';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  if (isLoggedIn && hasRouteAccess(user?.role, location.pathname)) {
+    return <>{children}</>;
+  }
 
   if (isLoggedIn) {
-    return <>{children}</>;
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <ShieldAlert className="w-8 h-8 text-amber-600" />
+          </div>
+          <h2 className="text-2xl font-display font-bold text-gray-900 mb-3">
+            Access Restricted
+          </h2>
+          <p className="text-gray-500 text-base leading-relaxed mb-6">
+            This module is not available for the {user?.role ? ROLE_LABELS[user.role] : 'current'} role.
+          </p>
+          <div className="flex flex-col gap-3">
+            <button
+              onClick={() => navigate(getDefaultDashboardPath(user?.role))}
+              className="btn-primary w-full justify-center py-3.5 text-base"
+            >
+              <LayoutDashboard className="w-5 h-5" />
+              Go to Dashboard
+            </button>
+            <button
+              onClick={() => navigate(-1)}
+              className="btn-outline w-full justify-center py-3.5 text-base"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Show the modal overlay — page behind is blocked
@@ -88,7 +124,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
             onClick={() => navigate(-1)}
             className="text-sm text-gray-400 hover:text-gray-600 transition-colors py-1"
           >
-            Cancel — Go Back
+            Cancel and Go Back
           </button>
         </div>
       </div>

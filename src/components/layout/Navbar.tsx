@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, ChevronDown, LayoutDashboard, LogOut, Settings, User, Zap, Bell } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApp } from '@/contexts/AppContext';
+import { getDefaultDashboardPath, ROLE_LABELS } from '@/lib/rbac';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,6 +35,8 @@ export default function Navbar() {
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
   ];
+
+  const dashboardPath = getDefaultDashboardPath(user?.role);
 
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
@@ -68,7 +71,7 @@ export default function Navbar() {
                     </span>
                   )}
                 </Link>
-                <Link to="/dashboard" className="btn-primary text-sm py-2 px-4">
+                <Link to={dashboardPath} className="btn-primary text-sm py-2 px-4">
                   <LayoutDashboard className="w-4 h-4" /> Dashboard
                 </Link>
                 <div className="relative" ref={profileRef}>
@@ -79,7 +82,7 @@ export default function Navbar() {
                     <img src={user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=7C3AED&color=fff`} alt={user?.name} className="w-8 h-8 rounded-lg object-cover" onError={e => { (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'U')}&background=7C3AED&color=fff`; }} />
                     <div className="text-left hidden lg:block">
                       <p className="text-sm font-semibold text-gray-800 leading-none">{user?.name}</p>
-                      <p className="text-xs text-gray-500 capitalize">{user?.role?.replace('_', ' ')}</p>
+                      <p className="text-xs text-gray-500">{user?.role ? ROLE_LABELS[user.role] : 'User'}</p>
                     </div>
                     <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
                   </button>
@@ -91,7 +94,7 @@ export default function Navbar() {
                         <p className="text-xs text-gray-500">{user?.email}</p>
                         <span className="badge-purple mt-1 inline-block capitalize">{user?.plan} plan</span>
                       </div>
-                      <Link to="/user-dashboard" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700 transition-colors">
+                      <Link to={dashboardPath} onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700 transition-colors">
                         <User className="w-4 h-4" /> My Dashboard
                       </Link>
                       <Link to="/settings" onClick={() => setProfileOpen(false)} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-sm text-gray-700 transition-colors">
@@ -146,7 +149,7 @@ export default function Navbar() {
                     <p className="text-xs text-gray-500 capitalize">{user?.plan} plan</p>
                   </div>
                 </div>
-                <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="btn-primary justify-center">
+                <Link to={dashboardPath} onClick={() => setMenuOpen(false)} className="btn-primary justify-center">
                   <LayoutDashboard className="w-4 h-4" /> Dashboard
                 </Link>
                 <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="flex items-center justify-center gap-2 py-2.5 text-red-600 font-medium">

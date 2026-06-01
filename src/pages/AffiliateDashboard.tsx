@@ -1,6 +1,7 @@
+import { Download, Copy, Share2, DollarSign, Users, TrendingUp, Gift, ArrowRight, Check } from "lucide-react";
 import { useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Copy, Share2, DollarSign, Users, TrendingUp, Gift, ArrowRight, Check } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { MOCK_AFFILIATE } from '@/data/mockData';
 import { toast } from 'sonner';
@@ -49,7 +50,7 @@ export default function AffiliateDashboard() {
             <p className="text-gray-500 text-sm mt-1">Earn up to 40% recurring commission on every referral</p>
           </div>
           <span className={`text-sm font-bold px-4 py-2 rounded-full ${currentTier.color}`}>
-            🏅 {currentTier.name} Tier — {currentTier.commission} commission
+             {currentTier.name} Tier — {currentTier.commission} commission
           </span>
         </div>
 
@@ -174,7 +175,7 @@ export default function AffiliateDashboard() {
               { name: 'Swipe Copy', type: 'Copywriting', size: '25 email swipes' },
             ].map(({ name, type, size }) => (
               <div key={name} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                <div className="w-9 h-9 bg-primary-100 rounded-lg flex items-center justify-center text-sm">📥</div>
+                <div className="w-9 h-9 bg-primary-100 rounded-lg flex items-center justify-center text-sm"><Download className="w-4 h-4 text-primary-600" /></div>
                 <div className="flex-1">
                   <p className="font-semibold text-sm text-gray-900">{name}</p>
                   <p className="text-xs text-gray-500">{type} · {size}</p>

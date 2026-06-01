@@ -1,5 +1,6 @@
+import { Home, ArrowLeft, Zap } from "lucide-react";
 import { Link } from 'react-router-dom';
-import { Home, ArrowLeft, Zap } from 'lucide-react';
+
 
 export default function NotFound() {
   return (

@@ -1,6 +1,7 @@
+import { Mail, Eye, MousePointer, DollarSign, Smartphone, MessageCircle, BarChart2, Plus, Play, Pause, Trash2, MessageSquare, Phone, TrendingUp, Send } from "lucide-react";
 import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { Plus, Play, Pause, Trash2, Mail, MessageSquare, Phone, TrendingUp, Send } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { useApp } from '@/contexts/AppContext';
 import type { Campaign } from '@/types';
@@ -22,7 +23,7 @@ const TYPE_COLORS: Record<string, string> = {
 const DRIP_STEPS = [
   { day: 0, subject: 'Welcome! Your Free Guide Is Here', type: 'email', opens: '62%' },
   { day: 1, subject: 'Quick question for you...', type: 'email', opens: '48%' },
-  { day: 3, subject: '🎁 Special bonus just for you', type: 'whatsapp', opens: '71%' },
+  { day: 3, subject: 'Special bonus just for you', type: 'whatsapp', opens: '71%' },
   { day: 5, subject: 'Your free trial expires in 2 days', type: 'sms', opens: '89%' },
   { day: 7, subject: 'Last chance to upgrade at 40% off', type: 'email', opens: '55%' },
 ];
@@ -75,13 +76,15 @@ export default function CampaignManager() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Emails Sent', value: campaigns.reduce((s, c) => s + c.sent, 0).toLocaleString(), icon: '📧' },
-            { label: 'Total Opens', value: campaigns.reduce((s, c) => s + c.opened, 0).toLocaleString(), icon: '👀' },
-            { label: 'Total Clicks', value: campaigns.reduce((s, c) => s + c.clicked, 0).toLocaleString(), icon: '🖱️' },
-            { label: 'Campaign Revenue', value: `$${campaigns.reduce((s, c) => s + c.revenue, 0).toLocaleString()}`, icon: '💰' },
-          ].map(({ label, value, icon }) => (
+            { label: 'Emails Sent', value: campaigns.reduce((s, c) => s + c.sent, 0).toLocaleString(), icon: Mail },
+            { label: 'Total Opens', value: campaigns.reduce((s, c) => s + c.opened, 0).toLocaleString(), icon: Eye },
+            { label: 'Total Clicks', value: campaigns.reduce((s, c) => s + c.clicked, 0).toLocaleString(), icon: MousePointer },
+            { label: 'Campaign Revenue', value: `$${campaigns.reduce((s, c) => s + c.revenue, 0).toLocaleString()}`, icon: DollarSign },
+          ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="dashboard-card flex items-center gap-3">
-              <span className="text-2xl">{icon}</span>
+              <div className="w-10 h-10 bg-primary-100 rounded-xl flex items-center justify-center">
+                <Icon className="w-5 h-5 text-primary-600" />
+              </div>
               <div>
                 <p className="text-xl font-bold text-gray-900">{value}</p>
                 <p className="text-xs text-gray-500">{label}</p>
@@ -106,7 +109,7 @@ export default function CampaignManager() {
                 <div className="grid grid-cols-4 gap-2">
                   {(['email', 'sms', 'whatsapp', 'ads'] as Campaign['type'][]).map(t => (
                     <button key={t} onClick={() => setForm({ ...form, type: t })} className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all text-sm font-semibold capitalize ${form.type === t ? 'border-primary-500 bg-primary-50 text-primary-700' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
-                      <span className="text-xl">{t === 'email' ? '📧' : t === 'sms' ? '📱' : t === 'whatsapp' ? '💬' : '📊'}</span>
+                      {t === 'email' ? <Mail className="w-5 h-5" /> : t === 'sms' ? <Smartphone className="w-5 h-5" /> : t === 'whatsapp' ? <MessageCircle className="w-5 h-5" /> : <BarChart2 className="w-5 h-5" />}
                       {t}
                     </button>
                   ))}
@@ -114,7 +117,7 @@ export default function CampaignManager() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Subject Line</label>
-                <input value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} className="input-field" placeholder="🚀 Your exclusive offer expires tonight..." />
+                <input value={form.subject} onChange={e => setForm({ ...form, subject: e.target.value })} className="input-field" placeholder="Your exclusive offer expires tonight..." />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Message / Content</label>

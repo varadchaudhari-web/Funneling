@@ -27,12 +27,16 @@ import AffiliateDashboard from '@/pages/AffiliateDashboard';
 import Settings from '@/pages/Settings';
 import LandingPageBuilder from '@/pages/LandingPageBuilder';
 import WebsiteBuilder from '@/pages/WebsiteBuilder';
+import Privacy from '@/pages/Privacy';
+import Terms from '@/pages/Terms';
+import Cookies from '@/pages/Cookies';
+import GDPR from '@/pages/GDPR';
 import NotFound from '@/pages/NotFound';
 import ProtectedRoute from '@/components/features/ProtectedRoute';
 
 const DASHBOARD_ROUTES = [
   '/dashboard', '/admin-dashboard', '/user-dashboard', '/funnel-builder',
-  '/crm', '/analytics', '/campaigns', '/payment', '/notifications',
+  '/crm', '/analytics', '/client-reports', '/campaigns', '/payment', '/notifications',
   '/affiliate', '/settings', '/landing-builder', '/website-builder',
 ];
 
@@ -45,18 +49,21 @@ function ScrollToTop() {
 function AppLayout() {
   const { pathname } = useLocation();
   const isDashboard = DASHBOARD_ROUTES.some(r => pathname.startsWith(r));
-  const isAuth = pathname === '/login' || pathname === '/register';
 
   return (
     <div className="min-h-screen flex flex-col">
-      {!isDashboard && !isAuth && <Navbar />}
-      <main className={`flex-1 ${!isDashboard && !isAuth ? '' : ''}`}>
+      {!isDashboard && <Navbar />}
+      <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/features" element={<Features />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/cookies" element={<Cookies />} />
+          <Route path="/gdpr" element={<GDPR />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
@@ -66,6 +73,7 @@ function AppLayout() {
           <Route path="/funnel-builder/:id" element={<ProtectedRoute><FunnelBuilder /></ProtectedRoute>} />
           <Route path="/crm" element={<ProtectedRoute><CRMDashboard /></ProtectedRoute>} />
           <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+          <Route path="/client-reports" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
           <Route path="/campaigns" element={<ProtectedRoute><CampaignManager /></ProtectedRoute>} />
           <Route path="/payment" element={<ProtectedRoute><PaymentDemo /></ProtectedRoute>} />
           <Route path="/notifications" element={<ProtectedRoute><NotificationCenter /></ProtectedRoute>} />
@@ -76,7 +84,7 @@ function AppLayout() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      {!isDashboard && !isAuth && <Footer />}
+      {!isDashboard && <Footer />}
     </div>
   );
 }

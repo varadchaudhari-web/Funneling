@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Zap, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Zap, Eye, EyeOff, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { getDefaultDashboardPath, type UserRole } from '@/lib/rbac';
 import { toast } from 'sonner';
 
 const DEMO_ROLES = [
@@ -9,16 +10,18 @@ const DEMO_ROLES = [
   { role: 'agency', label: 'Agency', email: 'sarah@agency.com', desc: 'Multi-client management' },
   { role: 'sales', label: 'Sales Team', email: 'marcus@sales.com', desc: 'Sales pipeline focus' },
   { role: 'admin', label: 'Admin', email: 'admin@funneling.io', desc: 'Full admin panel access' },
-];
+] as const;
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [selectedRole, setSelectedRole] = useState('business_owner');
+  const [selectedRole, setSelectedRole] = useState<UserRole>('business_owner');
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const signupNotice = (location.state as { signupNotice?: string } | null)?.signupNotice;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,17 +31,17 @@ export default function Login() {
     setLoading(false);
     if (ok) {
       toast.success('Welcome back! Redirecting to dashboard...');
-      setTimeout(() => navigate('/dashboard'), 500);
+      setTimeout(() => navigate(getDefaultDashboardPath(selectedRole)), 500);
     }
   };
 
-  const handleDemoLogin = async (role: string, demoEmail: string) => {
+  const handleDemoLogin = async (role: UserRole, demoEmail: string) => {
     setLoading(true);
     setSelectedRole(role);
     await login(demoEmail, 'demo123', role);
     setLoading(false);
     toast.success('Demo login successful!');
-    navigate('/dashboard');
+    navigate(getDefaultDashboardPath(role));
   };
 
   return (
@@ -57,6 +60,13 @@ export default function Login() {
         </div>
 
         <div className="bg-white rounded-3xl shadow-brand-xl p-8">
+          {signupNotice && (
+            <div className="mb-6 p-4 bg-green-50 rounded-2xl border border-green-100 flex gap-3">
+              <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-green-800 leading-relaxed">{signupNotice}</p>
+            </div>
+          )}
+
           {/* Demo Role Selector */}
           <div className="mb-6 p-4 bg-primary-50 rounded-2xl border border-primary-100">
             <div className="flex items-center gap-2 mb-3">
