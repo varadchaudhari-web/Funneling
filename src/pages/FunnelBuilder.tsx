@@ -1,18 +1,20 @@
+import { Home, Mail, DollarSign, PartyPopper, FileText, HardHat, Zap, CheckCircle, Plus, Eye, Upload, Trash2, Settings, Copy, Smartphone, Monitor, BarChart3, ArrowRight, ArrowLeft, ChevronRight, Check, ArrowUp, ArrowDown } from "lucide-react";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Eye, Upload, Trash2, Settings, Copy, Smartphone, Monitor, BarChart3, ArrowRight, ArrowLeft, ChevronRight, Zap, Check } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { useApp } from '@/contexts/AppContext';
 import { FUNNEL_TEMPLATES } from '@/data/mockData';
+import type { FunnelStep } from '@/types';
 import { toast } from 'sonner';
 
 const STEP_TYPES = [
-  { type: 'landing', label: 'Landing Page', icon: '🏠', color: 'bg-blue-100 text-blue-700' },
-  { type: 'optin', label: 'Opt-in Page', icon: '📧', color: 'bg-green-100 text-green-700' },
-  { type: 'sales', label: 'Sales Page', icon: '💰', color: 'bg-purple-100 text-purple-700' },
-  { type: 'upsell', label: 'Upsell', icon: '⬆️', color: 'bg-orange-100 text-orange-700' },
-  { type: 'downsell', label: 'Downsell', icon: '⬇️', color: 'bg-red-100 text-red-700' },
-  { type: 'thankyou', label: 'Thank You', icon: '🎉', color: 'bg-teal-100 text-teal-700' },
+  { type: 'landing', label: 'Landing Page', icon: Home, color: 'bg-blue-100 text-blue-700' },
+  { type: 'optin', label: 'Opt-in Page', icon: Mail, color: 'bg-green-100 text-green-700' },
+  { type: 'sales', label: 'Sales Page', icon: DollarSign, color: 'bg-purple-100 text-purple-700' },
+  { type: 'upsell', label: 'Upsell', icon: ArrowUp, color: 'bg-orange-100 text-orange-700' },
+  { type: 'downsell', label: 'Downsell', icon: ArrowDown, color: 'bg-red-100 text-red-700' },
+  { type: 'thankyou', label: 'Thank You', icon: PartyPopper, color: 'bg-teal-100 text-teal-700' },
 ];
 
 const VIEWS = ['builder', 'templates', 'analytics'];
@@ -60,7 +62,7 @@ export default function FunnelBuilder() {
 
   const addStep = (type: string) => {
     if (!funnel) return;
-    const step = { id: `s${Date.now()}`, name: STEP_TYPES.find(s => s.type === type)?.label || 'Page', type: type as any, visits: 0, conversions: 0, conversionRate: 0 };
+    const step = { id: `s${Date.now()}`, name: STEP_TYPES.find(s => s.type === type)?.label || 'Page', type: type as FunnelStep['type'], visits: 0, conversions: 0, conversionRate: 0 };
     updateFunnel(funnel.id, { steps: [...funnel.steps, step] });
     toast.success('Step added!');
   };
@@ -117,7 +119,7 @@ export default function FunnelBuilder() {
                         onClick={() => setActiveStepIdx(i)}
                         className={`flex items-center gap-2 p-2.5 rounded-xl cursor-pointer transition-all group ${activeStepIdx === i ? 'bg-primary-50 border-2 border-primary-300' : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'}`}
                       >
-                        <span className="text-base">{stepType?.icon || '📄'}</span>
+                        <span className="text-base">{stepType ? <stepType.icon className="w-5 h-5" /> : <FileText className="w-5 h-5" />}</span>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-gray-900 truncate">{step.name}</p>
                           <p className="text-xs text-gray-500 capitalize">{step.type}</p>
@@ -137,9 +139,9 @@ export default function FunnelBuilder() {
               <div className="dashboard-card">
                 <h3 className="font-semibold text-gray-900 mb-3 text-sm">Add Step</h3>
                 <div className="grid grid-cols-2 gap-2">
-                  {STEP_TYPES.map(({ type, label, icon, color }) => (
+                  {STEP_TYPES.map(({ type, label, icon: Icon, color }) => (
                     <button key={type} onClick={() => addStep(type)} className={`${color} p-2 rounded-xl text-xs font-semibold hover:opacity-80 transition-opacity flex flex-col items-center gap-1`}>
-                      <span className="text-base">{icon}</span>
+                      <Icon className="w-4 h-4" />
                       <span>{label.split(' ')[0]}</span>
                     </button>
                   ))}
@@ -164,14 +166,14 @@ export default function FunnelBuilder() {
                   <div className="p-6">
                     <div className="text-center mb-6">
                       <div className="w-12 h-12 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-3">
-                        <span className="text-2xl">{STEP_TYPES.find(s => s.type === funnel.steps[activeStepIdx]?.type)?.icon || '📄'}</span>
+                        <span className="text-2xl">{(() => { const Icon = STEP_TYPES.find(s => s.type === funnel.steps[activeStepIdx]?.type)?.icon || FileText; return <Icon className="w-8 h-8 text-primary-600" />; })()}</span>
                       </div>
                       <h3 className="text-xl font-display font-bold text-gray-900 mb-1">{funnel.steps[activeStepIdx].name}</h3>
                       <p className="text-sm text-gray-500">Click elements to edit — drag to reorder</p>
                     </div>
                     <div className="space-y-3">
                       <div className="border-2 border-dashed border-primary-300 rounded-xl p-4 text-center cursor-pointer hover:bg-primary-50 transition-colors">
-                        <p className="font-display font-bold text-xl text-gray-900 mb-2">🚀 Your Headline Goes Here</p>
+                        <p className="font-display font-bold text-xl text-gray-900 mb-2">Your Headline Goes Here</p>
                         <p className="text-sm text-gray-500">Click to edit this headline text</p>
                       </div>
                       <div className="border-2 border-dashed border-gray-200 rounded-xl p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors">
@@ -193,7 +195,7 @@ export default function FunnelBuilder() {
                   </div>
                 ) : (
                   <div className="p-12 text-center">
-                    <div className="text-5xl mb-3">🏗️</div>
+                    <div className="flex justify-center mb-3"><HardHat className="w-12 h-12 text-gray-400" /></div>
                     <p className="text-gray-500 text-sm">Select a step on the left or add a new one to start building</p>
                   </div>
                 )}
@@ -338,12 +340,14 @@ export default function FunnelBuilder() {
           <>
             <div className="grid md:grid-cols-3 gap-4">
               {[
-                { label: 'Total Funnels', value: funnels.length, icon: '⚡' },
-                { label: 'Active Funnels', value: funnels.filter(f => f.status === 'active').length, icon: '🟢' },
-                { label: 'Total Revenue', value: `$${funnels.reduce((s, f) => s + f.revenue, 0).toLocaleString()}`, icon: '💰' },
-              ].map(({ label, value, icon }) => (
+                  { label: 'Total Funnels', value: funnels.length, icon: Zap },
+                  { label: 'Active Funnels', value: funnels.filter(f => f.status === 'active').length, icon: CheckCircle },
+                  { label: 'Total Revenue', value: `$${funnels.reduce((s, f) => s + f.revenue, 0).toLocaleString()}`, icon: DollarSign },
+              ].map(({ label, value, icon: Icon }) => (
                 <div key={label} className="dashboard-card flex items-center gap-4">
-                  <span className="text-3xl">{icon}</span>
+                  <div className="w-11 h-11 bg-primary-100 rounded-xl flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-primary-600" />
+                  </div>
                   <div>
                     <p className="text-2xl font-bold text-gray-900">{value}</p>
                     <p className="text-sm text-gray-500">{label}</p>
@@ -385,7 +389,11 @@ export default function FunnelBuilder() {
                         {f.steps.slice(0, 4).map((step, i) => (
                           <div key={step.id} className="flex items-center gap-1">
                             <div className="bg-primary-100 text-primary-700 text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap">
-                              {STEP_TYPES.find(s => s.type === step.type)?.icon} {step.type}
+                              {(() => {
+                                const StepIcon = STEP_TYPES.find(s => s.type === step.type)?.icon || FileText;
+                                return <StepIcon className="w-3 h-3 inline-block mr-1" />;
+                              })()}
+                              {step.type}
                             </div>
                             {i < f.steps.slice(0, 4).length - 1 && <ChevronRight className="w-3 h-3 text-gray-300 flex-shrink-0" />}
                           </div>

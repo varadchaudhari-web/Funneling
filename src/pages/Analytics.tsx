@@ -1,9 +1,10 @@
+import { TrendingUp, DollarSign, Users, MousePointer, Eye, Bot, ArrowUp, ArrowDown } from "lucide-react";
 import { useState } from 'react';
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, LabelList
 } from 'recharts';
-import { TrendingUp, DollarSign, Users, MousePointer, Eye, Bot, ArrowUp, ArrowDown } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { MOCK_ANALYTICS, MOCK_FUNNELS, AI_RECOMMENDATIONS } from '@/data/mockData';
 
@@ -287,7 +288,7 @@ export default function Analytics() {
                     <h3 className="font-display font-bold text-gray-900">{test.name}</h3>
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${test.status === 'running' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>{test.status}</span>
                   </div>
-                  {test.winner && <span className="bg-green-100 text-green-700 text-sm font-bold px-3 py-1 rounded-full">🏆 Winner: Variant {test.winner}</span>}
+                  {test.winner && <span className="bg-green-100 text-green-700 text-sm font-bold px-3 py-1 rounded-full">Winner: Variant {test.winner}</span>}
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   {(['A', 'B'] as const).map(v => {

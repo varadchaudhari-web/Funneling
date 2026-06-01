@@ -16,6 +16,25 @@ const STAGE_COLORS: Record<string, string> = {
 };
 
 const VIEWS = ['list', 'pipeline', 'add'] as const;
+const INITIAL_LEAD_FORM = {
+  name: '',
+  email: '',
+  phone: '',
+  company: '',
+  source: 'Organic',
+  status: 'new' as Lead['status'],
+  score: 50,
+  value: 0,
+};
+type LeadFormFieldKey = 'name' | 'email' | 'phone' | 'company' | 'value' | 'score';
+const LEAD_FORM_FIELDS = [
+  { label: 'Full Name *', key: 'name', type: 'text', placeholder: 'John Smith' },
+  { label: 'Email *', key: 'email', type: 'email', placeholder: 'john@company.com' },
+  { label: 'Phone', key: 'phone', type: 'tel', placeholder: '+1 555-0100' },
+  { label: 'Company', key: 'company', type: 'text', placeholder: 'Acme Corp' },
+  { label: 'Deal Value ($)', key: 'value', type: 'number', placeholder: '5000' },
+  { label: 'Lead Score (0-100)', key: 'score', type: 'number', placeholder: '50' },
+] satisfies Array<{ label: string; key: LeadFormFieldKey; type: string; placeholder: string }>;
 
 export default function CRMDashboard() {
   const { leads, addLead, updateLead, deleteLead } = useApp();
@@ -23,7 +42,7 @@ export default function CRMDashboard() {
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', company: '', source: 'Organic', status: 'new' as Lead['status'], score: 50, value: 0 });
+  const [form, setForm] = useState(INITIAL_LEAD_FORM);
 
   const filtered = leads.filter(l =>
     (filterStatus === 'all' || l.status === filterStatus) &&
@@ -33,7 +52,7 @@ export default function CRMDashboard() {
   const handleAddLead = () => {
     if (!form.name || !form.email) { toast.error('Name and email are required'); return; }
     addLead({ ...form, tags: [form.source.toLowerCase()] });
-    setForm({ name: '', email: '', phone: '', company: '', source: 'Organic', status: 'new', score: 50, value: 0 });
+    setForm(INITIAL_LEAD_FORM);
     setView('list');
     toast.success(`Lead "${form.name}" added!`);
   };
@@ -78,17 +97,10 @@ export default function CRMDashboard() {
           <div className="dashboard-card max-w-2xl">
             <h2 className="font-display font-bold text-gray-900 mb-4">Add New Lead</h2>
             <div className="grid md:grid-cols-2 gap-4">
-              {[
-                { label: 'Full Name *', key: 'name', type: 'text', placeholder: 'John Smith' },
-                { label: 'Email *', key: 'email', type: 'email', placeholder: 'john@company.com' },
-                { label: 'Phone', key: 'phone', type: 'tel', placeholder: '+1 555-0100' },
-                { label: 'Company', key: 'company', type: 'text', placeholder: 'Acme Corp' },
-                { label: 'Deal Value ($)', key: 'value', type: 'number', placeholder: '5000' },
-                { label: 'Lead Score (0-100)', key: 'score', type: 'number', placeholder: '50' },
-              ].map(({ label, key, type, placeholder }) => (
+              {LEAD_FORM_FIELDS.map(({ label, key, type, placeholder }) => (
                 <div key={key}>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
-                  <input type={type} value={(form as any)[key]} onChange={e => setForm({ ...form, [key]: type === 'number' ? Number(e.target.value) : e.target.value })} className="input-field" placeholder={placeholder} />
+                  <input type={type} value={form[key]} onChange={e => setForm({ ...form, [key]: type === 'number' ? Number(e.target.value) : e.target.value })} className="input-field" placeholder={placeholder} />
                 </div>
               ))}
               <div>
@@ -215,7 +227,7 @@ export default function CRMDashboard() {
                 </table>
                 {filtered.length === 0 && (
                   <div className="text-center py-12 text-gray-400">
-                    <p className="text-4xl mb-2">🔍</p>
+                    <Search className="w-10 h-10 mx-auto mb-3 text-gray-300" />
                     <p>No leads found matching your search</p>
                   </div>
                 )}

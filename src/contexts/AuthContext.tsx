@@ -11,18 +11,32 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const USER_ROLES: User['role'][] = ['admin', 'business_owner', 'agency', 'sales'];
+
+function readSavedUser() {
+  try {
+    const saved = localStorage.getItem('funneling_user');
+    if (!saved) return null;
+    const parsed = JSON.parse(saved) as User;
+    return parsed?.role && USER_ROLES.includes(parsed.role) ? parsed : null;
+  } catch {
+    localStorage.removeItem('funneling_user');
+    return null;
+  }
+}
+
+function toUserRole(role?: string): User['role'] {
+  return USER_ROLES.includes(role as User['role']) ? role as User['role'] : 'business_owner';
+}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('funneling_user');
-    return saved ? JSON.parse(saved) : null;
-  });
+  const [user, setUser] = useState<User | null>(readSavedUser);
 
   const isLoggedIn = !!user;
 
   const login = async (email: string, _password: string, role?: string): Promise<boolean> => {
     await new Promise(resolve => setTimeout(resolve, 800));
-    const demoRole = role as User['role'] || 'business_owner';
+    const demoRole = toUserRole(role);
     const foundUser = MOCK_USERS.find(u => u.role === demoRole) || MOCK_USERS[0];
     const loginUser = email ? { ...foundUser, email } : foundUser;
     setUser(loginUser);

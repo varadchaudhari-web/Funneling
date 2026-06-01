@@ -1,39 +1,16 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Filter, Users, BarChart3, Megaphone, CreditCard,
-  Bell, UserCheck, Settings, Globe, PanelLeft, Zap, LogOut, ChevronDown,
-  Shield, TrendingUp, Menu, X, Home, FileCode
+  Bell, PanelLeft, Zap, LogOut, ChevronDown,
+  Menu, X, Home
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApp } from '@/contexts/AppContext';
-
-interface NavItem {
-  label: string;
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  badge?: string | number;
-  adminOnly?: boolean;
-}
-
-const navItems: NavItem[] = [
-  { label: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'User Dashboard', href: '/user-dashboard', icon: UserCheck },
-  { label: 'Funnel Builder', href: '/funnel-builder', icon: Filter },
-  { label: 'CRM', href: '/crm', icon: Users },
-  { label: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { label: 'Campaigns', href: '/campaigns', icon: Megaphone },
-  { label: 'Payments', href: '/payment', icon: CreditCard },
-  { label: 'Notifications', href: '/notifications', icon: Bell },
-  { label: 'Affiliate', href: '/affiliate', icon: TrendingUp },
-  { label: 'Landing Builder', href: '/landing-builder', icon: FileCode },
-  { label: 'Website Builder', href: '/website-builder', icon: Globe },
-  { label: 'Admin Panel', href: '/admin-dashboard', icon: Shield, adminOnly: true },
-  { label: 'Settings', href: '/settings', icon: Settings },
-];
+import { getRoleNavItems, ROLE_LABELS } from '@/lib/rbac';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false);
   const { user, logout } = useAuth();
   const { unreadCount } = useApp();
   const location = useLocation();
@@ -41,7 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleLogout = () => { logout(); navigate('/login'); };
 
-  const filteredNav = navItems.filter(item => !item.adminOnly || user?.role === 'admin');
+  const filteredNav = getRoleNavItems(user?.role);
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -66,7 +43,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-gray-800 truncate">{user?.name}</p>
-            <span className="text-xs text-primary-600 font-medium capitalize">{user?.plan} plan</span>
+            <span className="text-xs text-primary-600 font-medium">{user?.role ? ROLE_LABELS[user.role] : 'User'}</span>
           </div>
           <ChevronDown className="w-4 h-4 text-gray-400" />
         </div>
@@ -79,9 +56,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           const badge = item.label === 'Notifications' ? unreadCount : item.badge;
           return (
             <Link
-              key={item.href}
+              key={`${item.label}-${item.href}`}
               to={item.href}
-              onClick={() => setSidebarOpen(false)}
+              onClick={() => setMobileSidebarOpen(false)}
               className={isActive ? 'sidebar-item-active' : 'sidebar-item'}
             >
               <item.icon className="w-4 h-4 flex-shrink-0" />
@@ -113,16 +90,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-60 bg-white border-r border-gray-100 flex-col shadow-sm flex-shrink-0">
+      <aside className={`hidden lg:flex w-60 bg-white border-r border-gray-100 flex-col shadow-sm flex-shrink-0 transition-all duration-300 ${desktopSidebarCollapsed ? '-ml-60' : 'ml-0'}`}>
         <SidebarContent />
       </aside>
 
       {/* Mobile Sidebar */}
-      {sidebarOpen && (
+      {mobileSidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileSidebarOpen(false)} />
           <aside className="relative w-64 bg-white shadow-2xl flex flex-col">
-            <button onClick={() => setSidebarOpen(false)} className="absolute top-4 right-4 p-1 rounded-lg hover:bg-gray-100">
+            <button onClick={() => setMobileSidebarOpen(false)} className="absolute top-4 right-4 p-1 rounded-lg hover:bg-gray-100">
               <X className="w-5 h-5" />
             </button>
             <SidebarContent />
@@ -135,10 +112,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Top Bar */}
         <header className="bg-white border-b border-gray-100 px-4 lg:px-6 h-14 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors">
+            <button onClick={() => setMobileSidebarOpen(true)} className="lg:hidden p-2 rounded-xl hover:bg-gray-100 transition-colors">
               <Menu className="w-5 h-5" />
             </button>
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="hidden lg:flex p-2 rounded-xl hover:bg-gray-100 transition-colors">
+            <button onClick={() => setDesktopSidebarCollapsed(!desktopSidebarCollapsed)} className="hidden lg:flex p-2 rounded-xl hover:bg-gray-100 transition-colors">
               <PanelLeft className="w-4 h-4 text-gray-500" />
             </button>
           </div>

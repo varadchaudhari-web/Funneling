@@ -1,22 +1,23 @@
+import { Compass, User, Sparkles, MessageSquare, DollarSign, HelpCircle, Target, Clipboard, FileText, Image, Mail, Globe, Users, Rocket, Plus, Settings, Eye, ArrowLeft, Smartphone, Monitor, Upload, Search, Check, Palette } from "lucide-react";
 import { useState } from 'react';
-import { Globe, Plus, Settings, Eye, ArrowLeft, Smartphone, Monitor, Upload, Search, Check, Palette } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { WEBSITE_TEMPLATES } from '@/data/mockData';
 import { toast } from 'sonner';
 
 const SECTIONS = [
-  { id: 'nav', label: 'Navigation', icon: '🧭' },
-  { id: 'hero', label: 'Hero Section', icon: '🦸' },
-  { id: 'features', label: 'Features', icon: '✨' },
-  { id: 'about', label: 'About', icon: '👤' },
-  { id: 'testimonials', label: 'Testimonials', icon: '💬' },
-  { id: 'pricing', label: 'Pricing', icon: '💰' },
-  { id: 'faq', label: 'FAQ', icon: '❓' },
-  { id: 'cta', label: 'CTA Banner', icon: '🎯' },
-  { id: 'footer', label: 'Footer', icon: '📋' },
-  { id: 'blog', label: 'Blog Grid', icon: '📝' },
-  { id: 'gallery', label: 'Image Gallery', icon: '🖼️' },
-  { id: 'contact', label: 'Contact Form', icon: '📧' },
+  { id: 'nav', label: 'Navigation', icon: Compass },
+  { id: 'hero', label: 'Hero Section', icon: User },
+  { id: 'features', label: 'Features', icon: Sparkles },
+  { id: 'about', label: 'About', icon: User },
+  { id: 'testimonials', label: 'Testimonials', icon: MessageSquare },
+  { id: 'pricing', label: 'Pricing', icon: DollarSign },
+  { id: 'faq', label: 'FAQ', icon: HelpCircle },
+  { id: 'cta', label: 'CTA Banner', icon: Target },
+  { id: 'footer', label: 'Footer', icon: Clipboard },
+  { id: 'blog', label: 'Blog Grid', icon: FileText },
+  { id: 'gallery', label: 'Image Gallery', icon: Image },
+  { id: 'contact', label: 'Contact Form', icon: Mail },
 ];
 
 const MY_WEBSITES = [
@@ -55,12 +56,14 @@ export default function WebsiteBuilder() {
 
             <div className="grid md:grid-cols-3 gap-4">
               {[
-                { label: 'Total Websites', value: MY_WEBSITES.length, icon: '🌐' },
-                { label: 'Monthly Visitors', value: MY_WEBSITES.reduce((s, w) => s + w.visitors, 0).toLocaleString(), icon: '👥' },
-                { label: 'Published Sites', value: MY_WEBSITES.filter(w => w.status === 'published').length, icon: '🚀' },
-              ].map(({ label, value, icon }) => (
+                { label: 'Total Websites', value: MY_WEBSITES.length, icon: Globe },
+                { label: 'Monthly Visitors', value: MY_WEBSITES.reduce((s, w) => s + w.visitors, 0).toLocaleString(), icon: Users },
+                { label: 'Published Sites', value: MY_WEBSITES.filter(w => w.status === 'published').length, icon: Rocket },
+              ].map(({ label, value, icon: Icon }) => (
                 <div key={label} className="dashboard-card flex items-center gap-4">
-                  <span className="text-3xl">{icon}</span>
+                  <div className="w-11 h-11 bg-primary-100 rounded-xl flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-primary-600" />
+                  </div>
                   <div>
                     <p className="text-2xl font-bold text-gray-900">{value}</p>
                     <p className="text-sm text-gray-500">{label}</p>
@@ -183,9 +186,9 @@ export default function WebsiteBuilder() {
               <div className="dashboard-card">
                 <h3 className="font-semibold text-gray-900 mb-3 text-sm">Sections</h3>
                 <div className="space-y-1">
-                  {SECTIONS.map(({ id, label, icon }) => (
+                  {SECTIONS.map(({ id, label, icon: Icon }) => (
                     <button key={id} onClick={() => setActiveSection(id === activeSection ? null : id)} className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-sm transition-all ${activeSection === id ? 'bg-primary-50 text-primary-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}>
-                      <span>{icon}</span>{label}
+                      <Icon className="w-4 h-4" />{label}
                     </button>
                   ))}
                 </div>
@@ -223,7 +226,7 @@ export default function WebsiteBuilder() {
                     {/* Features preview */}
                     <div className="p-4 bg-white">
                       <div className="grid grid-cols-3 gap-2">
-                        {['⚡ Fast', '🎨 Beautiful', '📊 Analytics'].map(f => (
+                        {['Fast', 'Beautiful', 'Analytics'].map(f => (
                           <div key={f} className="bg-gray-50 rounded-lg p-2 text-center text-xs text-gray-700">{f}</div>
                         ))}
                       </div>

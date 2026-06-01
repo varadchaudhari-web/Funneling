@@ -30,9 +30,9 @@ export default function Footer() {
     Support: [
       { label: 'Documentation', href: '/contact#docs' },
       { label: 'Help Center', href: '/contact#help' },
-      { label: 'Privacy Policy', href: '/contact#privacy' },
-      { label: 'Terms of Service', href: '/contact#terms' },
-      { label: 'Cookie Policy', href: '/contact#cookies' },
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Terms of Service', href: '/terms' },
+      { label: 'Cookie Policy', href: '/cookies' },
     ],
   };
 
@@ -86,10 +86,10 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm">&copy; {year} Funneling, Inc. All rights reserved.</p>
           <div className="flex items-center gap-6 text-sm">
-            <Link to="/contact" className="hover:text-primary-400 transition-colors">Privacy</Link>
-            <Link to="/contact" className="hover:text-primary-400 transition-colors">Terms</Link>
-            <Link to="/contact" className="hover:text-primary-400 transition-colors">Cookies</Link>
-            <Link to="/contact" className="hover:text-primary-400 transition-colors">GDPR</Link>
+            <Link to="/privacy" className="hover:text-primary-400 transition-colors">Privacy</Link>
+            <Link to="/terms" className="hover:text-primary-400 transition-colors">Terms</Link>
+            <Link to="/cookies" className="hover:text-primary-400 transition-colors">Cookies</Link>
+            <Link to="/gdpr" className="hover:text-primary-400 transition-colors">GDPR</Link>
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>

@@ -8,17 +8,26 @@ const ROLES = [
   { value: 'business_owner', label: 'Business Owner', desc: 'Growing my own business' },
   { value: 'agency', label: 'Agency / Freelancer', desc: 'Managing client accounts' },
   { value: 'sales', label: 'Sales Professional', desc: 'Managing sales pipelines' },
-];
+] as const;
 
 const PERKS = ['14-day free trial', 'No credit card required', 'Free migration help', '24/7 support'];
+type SignupRole = (typeof ROLES)[number]['value'];
+
+interface SubmittedAccount {
+  name: string;
+  email: string;
+  company: string;
+  roleLabel: string;
+}
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', company: '', password: '' });
-  const [selectedRole, setSelectedRole] = useState('business_owner');
+  const [selectedRole, setSelectedRole] = useState<SignupRole>('business_owner');
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
-  const { login } = useAuth();
+  const [submittedAccount, setSubmittedAccount] = useState<SubmittedAccount | null>(null);
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleNext = () => {
@@ -30,10 +39,24 @@ export default function Register() {
     e.preventDefault();
     if (!form.password) { toast.error('Please set a password'); return; }
     setLoading(true);
-    await login(form.email, form.password, selectedRole);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    const roleLabel = ROLES.find(role => role.value === selectedRole)?.label || 'Business Owner';
+    logout();
+    setSubmittedAccount({
+      name: form.name,
+      email: form.email,
+      company: form.company || 'Not provided',
+      roleLabel,
+    });
     setLoading(false);
-    toast.success('Account created! Welcome to Funneling 🎉');
-    navigate('/dashboard');
+    toast.success('Your account was generated successfully. Database is not connected; this is mock data.');
+    setTimeout(() => {
+      navigate('/login', {
+        state: {
+          signupNotice: 'Your account was generated successfully. Database is not connected; this is mock data. Please use demo login to continue.',
+        },
+      });
+    }, 2800);
   };
 
   return (
@@ -60,16 +83,6 @@ export default function Register() {
               </li>
             ))}
           </ul>
-          <div className="mt-12 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-            <p className="text-white/80 text-sm italic mb-4">"Funneling increased our revenue by $127K in 3 months. Best investment we've made."</p>
-            <div className="flex items-center gap-3">
-              <img src="https://images.unsplash.com/photo-1494790108755-2616b612b515?w=40&h=40&fit=crop&crop=face" className="w-10 h-10 rounded-full" alt="" />
-              <div>
-                <p className="font-semibold text-sm">Sarah Johnson</p>
-                <p className="text-white/60 text-xs">CEO, TechLaunch</p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Right: Form */}
@@ -90,7 +103,33 @@ export default function Register() {
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= 2 ? 'bg-primary-500 text-white' : 'bg-gray-200 text-gray-500'}`}>2</div>
             </div>
 
-            {step === 1 ? (
+            {submittedAccount ? (
+              <div>
+                <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-5">
+                  <Check className="w-7 h-7 text-green-600" />
+                </div>
+                <h2 className="text-2xl font-display font-bold text-gray-900 mb-2">Account Generated Successfully</h2>
+                <p className="text-gray-500 text-sm mb-5">
+                  Database is not connected in this demo, so this information was generated as mock data. You will be redirected to the login page.
+                </p>
+                <div className="space-y-3 bg-gray-50 rounded-2xl p-4 mb-6">
+                  {[
+                    { label: 'Name', value: submittedAccount.name },
+                    { label: 'Email', value: submittedAccount.email },
+                    { label: 'Company', value: submittedAccount.company },
+                    { label: 'Role', value: submittedAccount.roleLabel },
+                  ].map(({ label, value }) => (
+                    <div key={label} className="flex justify-between gap-4 text-sm">
+                      <span className="text-gray-500">{label}</span>
+                      <span className="font-semibold text-gray-900 text-right">{value}</span>
+                    </div>
+                  ))}
+                </div>
+                <button type="button" onClick={() => navigate('/login')} className="btn-primary w-full justify-center py-3.5">
+                  Go to Login <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            ) : step === 1 ? (
               <div>
                 <h2 className="text-2xl font-display font-bold text-gray-900 mb-1">Create Your Account</h2>
                 <p className="text-gray-500 text-sm mb-6">Start your 14-day free trial today</p>

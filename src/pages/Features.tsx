@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Filter, Users, BarChart3, Megaphone, Globe, Shield, CreditCard, Bot, Zap, Check, ArrowRight } from 'lucide-react';
+import { Filter, Users, BarChart3, Megaphone, Globe, Shield, CreditCard, Bot, Zap, Check, ArrowRight, Share2, Target, Mail, MessageCircle, Smartphone, ShoppingCart, Video } from 'lucide-react';
+import AuthAwareLink from '@/components/features/AuthAwareLink';
 
 const FEATURE_CATEGORIES = [
   {
@@ -45,6 +46,21 @@ const COMPARISON = [
   { feature: 'Website Builder', funneling: true, clickfunnels: true, hubspot: true, gohighlevel: true },
   { feature: 'Affiliate System', funneling: true, clickfunnels: true, hubspot: false, gohighlevel: true },
   { feature: 'Starting Price/mo', funneling: '$97', clickfunnels: '$147', hubspot: '$800', gohighlevel: '$97' },
+];
+
+const INTEGRATIONS = [
+  { label: 'Facebook', icon: Share2 },
+  { label: 'Google Ads', icon: Target },
+  { label: 'Stripe', icon: CreditCard },
+  { label: 'Mailchimp', icon: Mail },
+  { label: 'Slack', icon: MessageCircle },
+  { label: 'Zapier', icon: Zap },
+  { label: 'HubSpot', icon: Users },
+  { label: 'WhatsApp', icon: MessageCircle },
+  { label: 'Twilio', icon: Smartphone },
+  { label: 'Shopify', icon: ShoppingCart },
+  { label: 'Zoom', icon: Video },
+  { label: 'Google Analytics', icon: BarChart3 },
 ];
 
 export default function Features() {
@@ -154,9 +170,10 @@ export default function Features() {
           <h2 className="text-4xl font-display font-black text-gray-900 mb-4">Connects With 200+ Tools</h2>
           <p className="text-gray-500 mb-10">Zapier, Facebook, Google, Stripe, Mailchimp, Slack, HubSpot, and many more</p>
           <div className="flex flex-wrap justify-center gap-4">
-            {['📘 Facebook', '🎯 Google Ads', '💳 Stripe', '📧 Mailchimp', '💬 Slack', '⚡ Zapier', '🔶 HubSpot', '💚 WhatsApp', '📱 Twilio', '🛒 Shopify', '📹 Zoom', '📊 Google Analytics'].map(t => (
-              <div key={t} className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 shadow-card hover:shadow-card-hover transition-all hover:-translate-y-0.5">
-                {t}
+            {INTEGRATIONS.map(({ label, icon: Icon }) => (
+              <div key={label} className="bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 shadow-card hover:shadow-card-hover transition-all hover:-translate-y-0.5 inline-flex items-center gap-2">
+                <Icon className="w-4 h-4 text-primary-600" />
+                {label}
               </div>
             ))}
           </div>
@@ -170,7 +187,7 @@ export default function Features() {
           <h2 className="text-4xl font-display font-black text-white mb-4">See All Features in Action</h2>
           <p className="text-white/70 text-lg mb-8">Start your 14-day free trial — no credit card required.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" className="btn-accent text-lg py-4 px-8">Start Free Trial <ArrowRight className="w-5 h-5" /></Link>
+            <AuthAwareLink intent="trial" guestTo="/register" className="btn-accent text-lg py-4 px-8">Start Free Trial <ArrowRight className="w-5 h-5" /></AuthAwareLink>
             <Link to="/pricing" className="btn-outline border-white/40 text-white hover:bg-white/10 text-lg py-4 px-8">View Pricing</Link>
           </div>
         </div>

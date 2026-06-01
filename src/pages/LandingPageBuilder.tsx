@@ -1,22 +1,23 @@
+import { Type, FileText, Square, Image, Video, Clipboard, MessageSquare, Minus, CheckSquare, DollarSign, Palette, Eye, Target, Plus, Trash2, Upload, Smartphone, Monitor, Settings, ArrowLeft, Globe, Search, Check, Clock, MoveVertical } from "lucide-react";
 import { useState } from 'react';
-import { Plus, Trash2, Eye, Upload, Smartphone, Monitor, Settings, ArrowLeft, Globe, Search, Check } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { FUNNEL_TEMPLATES } from '@/data/mockData';
 import { toast } from 'sonner';
 
 const ELEMENTS = [
-  { type: 'headline', label: 'Headline', icon: '📝' },
-  { type: 'subheadline', label: 'Subheadline', icon: '📄' },
-  { type: 'button', label: 'CTA Button', icon: '🔘' },
-  { type: 'image', label: 'Image', icon: '🖼️' },
-  { type: 'video', label: 'Video', icon: '🎬' },
-  { type: 'form', label: 'Opt-in Form', icon: '📋' },
-  { type: 'countdown', label: 'Countdown', icon: '⏰' },
-  { type: 'testimonial', label: 'Testimonial', icon: '💬' },
-  { type: 'divider', label: 'Divider', icon: '➖' },
-  { type: 'spacer', label: 'Spacer', icon: '↕️' },
-  { type: 'features', label: 'Features List', icon: '✅' },
-  { type: 'pricing', label: 'Pricing Box', icon: '💰' },
+  { type: 'headline', label: 'Headline', icon: Type },
+  { type: 'subheadline', label: 'Subheadline', icon: FileText },
+  { type: 'button', label: 'CTA Button', icon: Square },
+  { type: 'image', label: 'Image', icon: Image as ImageIcon },
+  { type: 'video', label: 'Video', icon: Video },
+  { type: 'form', label: 'Opt-in Form', icon: Clipboard },
+  { type: 'countdown', label: 'Countdown', icon: Clock },
+  { type: 'testimonial', label: 'Testimonial', icon: MessageSquare },
+  { type: 'divider', label: 'Divider', icon: Minus },
+  { type: 'spacer', label: 'Spacer', icon: MoveVertical },
+  { type: 'features', label: 'Features List', icon: CheckSquare },
+  { type: 'pricing', label: 'Pricing Box', icon: DollarSign },
 ];
 
 type PageView = 'list' | 'editor';
@@ -34,7 +35,7 @@ export default function LandingPageBuilder() {
   const [pages, setPages] = useState(SAMPLE_PAGES);
   const [draggedEl, setDraggedEl] = useState<string | null>(null);
   const [pageElements, setPageElements] = useState([
-    { id: 'el1', type: 'headline', content: '🚀 Get Your FREE Guide Today', editable: true },
+    { id: 'el1', type: 'headline', content: 'Get Your FREE Guide Today', editable: true },
     { id: 'el2', type: 'subheadline', content: 'Discover the proven system used by 50,000+ businesses to generate leads on autopilot', editable: true },
     { id: 'el3', type: 'form', content: 'Email Opt-in Form', editable: false },
     { id: 'el4', type: 'button', content: 'YES! Send Me the Free Guide →', editable: true },
@@ -81,9 +82,9 @@ export default function LandingPageBuilder() {
             <div className="dashboard-card">
               <h3 className="font-semibold text-gray-900 mb-3 text-sm">Elements</h3>
               <div className="grid grid-cols-2 gap-1.5">
-                {ELEMENTS.map(({ type, label, icon }) => (
+                {ELEMENTS.map(({ type, label, icon: Icon }) => (
                   <button key={type} onClick={() => addElement(type)} draggable onDragStart={() => setDraggedEl(type)} className="flex flex-col items-center gap-1 p-2 rounded-xl bg-gray-50 hover:bg-primary-50 hover:text-primary-700 transition-all text-xs font-medium text-gray-600 cursor-grab active:cursor-grabbing">
-                    <span className="text-lg">{icon}</span>
+                    <Icon className="w-4 h-4" />
                     {label}
                   </button>
                 ))}
@@ -148,7 +149,7 @@ export default function LandingPageBuilder() {
                   ))}
                   {pageElements.length === 0 && (
                     <div className="text-center py-12 text-white/40">
-                      <p className="text-4xl mb-2">🎨</p>
+                      <div className="flex justify-center mb-2"><Palette className="w-10 h-10 text-gray-400" /></div>
                       <p className="text-sm">Drag & drop elements here</p>
                     </div>
                   )}
@@ -212,12 +213,14 @@ export default function LandingPageBuilder() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4">
           {[
-            { label: 'Total Pages', value: pages.length, icon: '📄' },
-            { label: 'Total Visits', value: pages.reduce((s, p) => s + p.visits, 0).toLocaleString(), icon: '👀' },
-            { label: 'Conversions', value: pages.reduce((s, p) => s + p.conversions, 0).toLocaleString(), icon: '🎯' },
-          ].map(({ label, value, icon }) => (
+            { label: 'Total Pages', value: pages.length, icon: FileText },
+            { label: 'Total Visits', value: pages.reduce((s, p) => s + p.visits, 0).toLocaleString(), icon: Eye },
+            { label: 'Conversions', value: pages.reduce((s, p) => s + p.conversions, 0).toLocaleString(), icon: Target },
+          ].map(({ label, value, icon: Icon }) => (
             <div key={label} className="dashboard-card flex items-center gap-3">
-              <span className="text-3xl">{icon}</span>
+              <div className="w-11 h-11 bg-primary-100 rounded-xl flex items-center justify-center">
+                <Icon className="w-5 h-5 text-primary-600" />
+              </div>
               <div>
                 <p className="text-xl font-bold text-gray-900">{value}</p>
                 <p className="text-sm text-gray-500">{label}</p>

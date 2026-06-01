@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom';
 import {
   ArrowRight, Check, Star, Zap, TrendingUp, Users, BarChart3,
   Megaphone, Globe, Shield, ChevronDown, Play, Sparkles, Target,
-  Bot, MousePointer, DollarSign, Award, Quote, LayoutDashboard, Filter
+  Bot, MousePointer, DollarSign, Award, Quote, LayoutDashboard, Filter,
+  Mail, MessageCircle, Smartphone
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import AuthAwareLink from '@/components/features/AuthAwareLink';
+import { getDefaultDashboardPath } from '@/lib/rbac';
 import heroBg from '@/assets/hero-bg.jpg';
 import dashboardPreview from '@/assets/dashboard-preview.jpg';
 
@@ -75,7 +78,7 @@ const METRICS = [
 ];
 
 export default function Home() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user } = useAuth();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [videoPlay, setVideoPlay] = useState(false);
   const [billingAnnual, setBillingAnnual] = useState(false);
@@ -110,14 +113,14 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-in" style={{ animationDelay: '300ms' }}>
             {isLoggedIn ? (
-              <Link to="/dashboard" className="btn-accent text-lg py-4 px-8 shadow-brand-xl">
+              <Link to={getDefaultDashboardPath(user?.role)} className="btn-accent text-lg py-4 px-8 shadow-brand-xl">
                 <LayoutDashboard className="w-5 h-5" /> Go to Dashboard <ArrowRight className="w-5 h-5" />
               </Link>
             ) : (
               <>
-                <Link to="/register" className="btn-accent text-lg py-4 px-8 shadow-brand-xl hover:shadow-2xl">
+                <AuthAwareLink intent="trial" guestTo="/register" className="btn-accent text-lg py-4 px-8 shadow-brand-xl hover:shadow-2xl">
                   Start Free Trial <ArrowRight className="w-5 h-5" />
-                </Link>
+                </AuthAwareLink>
                 <Link to="/features" className="btn-outline border-white/40 text-white hover:bg-white/10 text-lg py-4 px-8">
                   See All Features
                 </Link>
@@ -329,12 +332,14 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { icon: '✉️', title: 'Email Campaigns', desc: 'Beautiful email sequences with 60%+ open rates using smart segmentation and personalization.' },
-              { icon: '💬', title: 'WhatsApp Marketing', desc: 'Reach customers on WhatsApp with automated messages and 68% reply rates vs 22% email.' },
-              { icon: '📱', title: 'SMS Automation', desc: 'High-impact SMS campaigns with 98% open rates for time-sensitive offers and reminders.' },
-            ].map(({ icon, title, desc }) => (
+              { icon: Mail, title: 'Email Campaigns', desc: 'Beautiful email sequences with 60%+ open rates using smart segmentation and personalization.' },
+              { icon: MessageCircle, title: 'WhatsApp Marketing', desc: 'Reach customers on WhatsApp with automated messages and 68% reply rates vs 22% email.' },
+              { icon: Smartphone, title: 'SMS Automation', desc: 'High-impact SMS campaigns with 98% open rates for time-sensitive offers and reminders.' },
+            ].map(({ icon: Icon, title, desc }) => (
               <div key={title} className="card-premium p-8 text-center">
-                <div className="text-5xl mb-4">{icon}</div>
+                <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <Icon className="w-7 h-7 text-primary-600" />
+                </div>
                 <h3 className="font-display font-bold text-xl text-gray-900 mb-3">{title}</h3>
                 <p className="text-gray-500 leading-relaxed">{desc}</p>
               </div>
@@ -485,9 +490,15 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <Link to="/register" className={`block text-center font-semibold py-3.5 px-6 rounded-xl transition-all ${plan.popular ? 'btn-primary w-full justify-center' : 'btn-outline w-full justify-center'}`}>
+                {plan.cta === 'Contact Sales' ? (
+                  <Link to="/contact" className="block text-center font-semibold py-3.5 px-6 rounded-xl transition-all btn-outline w-full justify-center">
+                    {plan.cta}
+                  </Link>
+                ) : (
+                  <AuthAwareLink intent="trial" guestTo="/register" className={`block text-center font-semibold py-3.5 px-6 rounded-xl transition-all ${plan.popular ? 'btn-primary w-full justify-center' : 'btn-outline w-full justify-center'}`}>
                   {plan.cta}
-                </Link>
+                  </AuthAwareLink>
+                )}
               </div>
             ))}
           </div>
@@ -569,9 +580,9 @@ export default function Home() {
             Join 50,000+ businesses using Funneling to build, convert, and scale. No contracts, no credit card required.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" className="btn-accent text-lg py-4 px-10 shadow-brand-xl">
+            <AuthAwareLink intent="trial" guestTo="/register" className="btn-accent text-lg py-4 px-10 shadow-brand-xl">
               Start Free Trial <ArrowRight className="w-5 h-5" />
-            </Link>
+            </AuthAwareLink>
             <Link to="/contact" className="btn-outline border-white/40 text-white hover:bg-white/10 text-lg py-4 px-10">
               Talk to Sales
             </Link>
@@ -582,5 +593,3 @@ export default function Home() {
     </div>
   );
 }
-
-

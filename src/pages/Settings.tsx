@@ -1,28 +1,30 @@
+import { User, Bell, CreditCard, Shield, Globe, Users, Key, Save, Camera, LogOut, Share2, Target, Mail, MessageCircle, Zap, Smartphone } from "lucide-react";
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Bell, CreditCard, Shield, Globe, Users, Key, Save, Camera, LogOut } from 'lucide-react';
+
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
+import type { UserRole } from '@/lib/rbac';
 import { toast } from 'sonner';
 
 const TABS = [
-  { id: 'profile', label: 'Profile', icon: User },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'billing', label: 'Billing', icon: CreditCard },
-  { id: 'security', label: 'Security', icon: Shield },
-  { id: 'integrations', label: 'Integrations', icon: Globe },
-  { id: 'team', label: 'Team', icon: Users },
+  { id: 'profile', label: 'Profile', icon: User, roles: ['admin', 'business_owner', 'agency', 'sales'] },
+  { id: 'notifications', label: 'Notifications', icon: Bell, roles: ['admin', 'business_owner', 'agency', 'sales'] },
+  { id: 'billing', label: 'Billing', icon: CreditCard, roles: ['admin', 'business_owner'] },
+  { id: 'security', label: 'Security', icon: Shield, roles: ['admin', 'business_owner', 'agency', 'sales'] },
+  { id: 'integrations', label: 'Integrations', icon: Globe, roles: ['admin', 'business_owner', 'agency'] },
+  { id: 'team', label: 'Team', icon: Users, roles: ['admin', 'business_owner', 'agency'] },
 ];
 
 const INTEGRATIONS = [
-  { name: 'Facebook Ads', icon: '📘', status: 'connected', color: 'bg-blue-100' },
-  { name: 'Google Ads', icon: '🎯', status: 'connected', color: 'bg-red-100' },
-  { name: 'Mailchimp', icon: '🐒', status: 'disconnected', color: 'bg-yellow-100' },
-  { name: 'HubSpot', icon: '🔶', status: 'disconnected', color: 'bg-orange-100' },
-  { name: 'Slack', icon: '💬', status: 'connected', color: 'bg-purple-100' },
-  { name: 'Zapier', icon: '⚡', status: 'disconnected', color: 'bg-orange-100' },
-  { name: 'Stripe', icon: '💳', status: 'connected', color: 'bg-indigo-100' },
-  { name: 'WhatsApp Business', icon: '💚', status: 'connected', color: 'bg-green-100' },
+  { name: 'Facebook Ads', icon: Share2, status: 'connected', color: 'bg-blue-100 text-blue-600' },
+  { name: 'Google Ads', icon: Target, status: 'connected', color: 'bg-red-100 text-red-600' },
+  { name: 'Mailchimp', icon: Mail, status: 'disconnected', color: 'bg-yellow-100 text-yellow-700' },
+  { name: 'HubSpot', icon: Users, status: 'disconnected', color: 'bg-orange-100 text-orange-700' },
+  { name: 'Slack', icon: MessageCircle, status: 'connected', color: 'bg-purple-100 text-purple-600' },
+  { name: 'Zapier', icon: Zap, status: 'disconnected', color: 'bg-orange-100 text-orange-700' },
+  { name: 'Stripe', icon: CreditCard, status: 'connected', color: 'bg-indigo-100 text-indigo-600' },
+  { name: 'WhatsApp Business', icon: Smartphone, status: 'connected', color: 'bg-green-100 text-green-600' },
 ];
 
 const TEAM = [
@@ -31,6 +33,14 @@ const TEAM = [
   { name: 'Marcus Williams', email: 'marcus@sales.com', role: 'Editor', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=40&h=40&fit=crop&crop=face' },
 ];
 
+const PROFILE_FIELDS = [
+  { label: 'Full Name', key: 'name', type: 'text' },
+  { label: 'Email Address', key: 'email', type: 'email' },
+  { label: 'Company', key: 'company', type: 'text' },
+  { label: 'Website', key: 'website', type: 'url' },
+  { label: 'Timezone', key: 'timezone', type: 'text' },
+] satisfies Array<{ label: string; key: 'name' | 'email' | 'company' | 'website' | 'timezone'; type: string }>;
+
 export default function Settings() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -38,6 +48,7 @@ export default function Settings() {
   const [profile, setProfile] = useState({ name: user?.name || '', email: user?.email || '', company: user?.company || '', timezone: 'UTC-8 (PST)', website: 'https://mycompany.com', bio: '' });
   const [inviteEmail, setInviteEmail] = useState('');
   const [connections, setConnections] = useState<Record<string, boolean>>({ facebook: true, google: true, mailchimp: false, hubspot: false, slack: true, zapier: false, stripe: true, whatsapp: true });
+  const visibleTabs = TABS.filter(tab => tab.roles.includes(user?.role as UserRole));
 
   const handleSave = () => toast.success('Settings saved successfully!');
   const handleInvite = () => { if (inviteEmail) { toast.success(`Invitation sent to ${inviteEmail}`); setInviteEmail(''); } };
@@ -59,7 +70,7 @@ export default function Settings() {
           {/* Sidebar */}
           <div className="dashboard-card h-fit lg:col-span-1">
             <nav className="space-y-1">
-              {TABS.map(tab => (
+              {visibleTabs.map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-left ${activeTab === tab.id ? 'bg-primary-50 text-primary-700' : 'text-gray-600 hover:bg-gray-50'}`}>
                   <tab.icon className="w-4 h-4" />
                   {tab.label}
@@ -90,16 +101,10 @@ export default function Settings() {
                   </div>
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
-                  {[
-                    { label: 'Full Name', key: 'name', type: 'text' },
-                    { label: 'Email Address', key: 'email', type: 'email' },
-                    { label: 'Company', key: 'company', type: 'text' },
-                    { label: 'Website', key: 'website', type: 'url' },
-                    { label: 'Timezone', key: 'timezone', type: 'text' },
-                  ].map(({ label, key, type }) => (
+                  {PROFILE_FIELDS.map(({ label, key, type }) => (
                     <div key={key}>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">{label}</label>
-                      <input type={type} value={(profile as any)[key]} onChange={e => setProfile({ ...profile, [key]: e.target.value })} className="input-field" />
+                      <input type={type} value={profile[key]} onChange={e => setProfile({ ...profile, [key]: e.target.value })} className="input-field" />
                     </div>
                   ))}
                   <div className="md:col-span-2">
@@ -224,15 +229,17 @@ export default function Settings() {
               <div className="dashboard-card">
                 <h2 className="font-display font-bold text-gray-900 mb-6">Integrations</h2>
                 <div className="grid md:grid-cols-2 gap-4">
-                  {INTEGRATIONS.map(({ name, icon, color }) => {
+                  {INTEGRATIONS.map(({ name, icon: Icon, color }) => {
                     const key = name.toLowerCase().split(' ')[0];
                     const connected = connections[key];
                     return (
                       <div key={name} className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl">
-                        <div className={`w-10 h-10 ${color} rounded-xl flex items-center justify-center text-xl`}>{icon}</div>
+                        <div className={`w-10 h-10 ${color} rounded-xl flex items-center justify-center`}>
+                          <Icon className="w-5 h-5" />
+                        </div>
                         <div className="flex-1">
                           <p className="font-semibold text-sm text-gray-900">{name}</p>
-                          <span className={`text-xs font-medium ${connected ? 'text-green-600' : 'text-gray-400'}`}>{connected ? '✓ Connected' : 'Not connected'}</span>
+                          <span className={`text-xs font-medium ${connected ? 'text-green-600' : 'text-gray-400'}`}>{connected ? 'Connected' : 'Not connected'}</span>
                         </div>
                         <button onClick={() => toggleIntegration(name)} className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${connected ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-primary-100 text-primary-700 hover:bg-primary-200'}`}>
                           {connected ? 'Disconnect' : 'Connect'}
